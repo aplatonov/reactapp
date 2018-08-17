@@ -1,8 +1,8 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-class Stopwatcher extends React.Component {
+class Timer extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -44,16 +44,16 @@ class Stopwatcher extends React.Component {
 
 	render() {
 		return (
-			<Fragment>
-			<h1>{this.state.milliseconds}</h1>
-			<button onClick={this.onClickStart}>Start</button>
-			<button onClick={this.onClickStop}>Stop</button>
-			</Fragment>
+			<div>
+				<h1>{this.state.milliseconds}</h1>
+				<button onClick={this.onClickStart}>Start</button>
+				<button onClick={this.onClickStop}>Stop</button>
+			</div>
 		)
 	}
 }
 
 const rootElement = document.getElementById("app");
-ReactDOM.render(<Stopwatcher />, rootElement);
+ReactDOM.render(<Timer />, rootElement);
 
 module.hot.accept();
