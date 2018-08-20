@@ -10,28 +10,27 @@ class Timer extends React.Component {
 
 		this.state = {
 			milliseconds: 0,
+			interval: 100
 		};
-
-		this.interval = 98;
 	}
 
 	componentDidMount() {
 		this.timer = setInterval(() => {
 			this.tick();
-		}, this.interval);
+		}, this.state.interval);
 	}
 
 	tick() {
-		this.setState({
-			milliseconds: this.state.milliseconds + this.interval,
-		})
+		this.setState(prevState => ({
+			milliseconds: prevState.milliseconds + prevState.interval,
+		}))
 	}
 
 	onClickStart = () => {
 		if (!this.timer) { 
 			this.timer = setInterval(() => {
 				this.tick();
-			}, this.interval);
+			}, this.state.interval);
 		}
 	};
 
@@ -42,13 +41,15 @@ class Timer extends React.Component {
 
 	onInc = () => {
 		this.setState({
-			milliseconds: this.state.milliseconds + this.interval,
+			//milliseconds: this.state.milliseconds + this.state.interval,
+			interval: this.state.interval + 1000,
 		})
 	};
 
 	onDec = () => {
 		this.setState({
-			milliseconds: this.state.milliseconds - this.interval,
+			//milliseconds: this.state.milliseconds - this.state.interval,
+			interval: this.state.interval - 1000,
 		})
 	};
 
@@ -79,6 +80,8 @@ class Timer extends React.Component {
 				<br />
 				<button className="buttonTrue" onClick={this.onInc}>Inc</button>
 				<button className="buttonFalse" onClick={this.onDec}>Dec</button>
+				<br />
+				<div>Текущий интервал: {this.state.interval}</div>
 			</div>
 		)
 	}
