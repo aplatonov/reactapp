@@ -2,92 +2,152 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './style.css';
 
-class Timer extends React.Component {
-	constructor(props) {
-		super(props);
-
-		this.timer = null;
-
-		this.state = {
-			milliseconds: 0,
-			interval: 100
-		};
-	}
-
-	componentDidMount() {
-		this.timer = setInterval(() => {
-			this.tick();
-		}, this.state.interval);
-	}
-
-	tick() {
-		this.setState(prevState => ({
-			milliseconds: prevState.milliseconds + prevState.interval,
-		}))
-	}
-
-	onClickStart = () => {
-		if (!this.timer) { 
-			this.timer = setInterval(() => {
-				this.tick();
-			}, this.state.interval);
-		}
-	};
-
-	onClickStop = () => {
-		clearInterval(this.timer);
-		this.timer = null;
-	};
-
-	onInc = () => {
-		this.setState({
-			//milliseconds: this.state.milliseconds + this.state.interval,
-			interval: this.state.interval + 1000,
-		})
-	};
-
-	onDec = () => {
-		this.setState({
-			//milliseconds: this.state.milliseconds - this.state.interval,
-			interval: this.state.interval - 1000,
-		})
-	};
-
-	componentWillUnmount() {
-		clearInterval(this.timer);
-	}
-
-	msToTime = (s) => {
-		let ms = s % 1000;
-		s = (s - ms) / 1000;
-		let secs = s % 60;
-		s = (s - secs) / 60;
-		let mins = s % 60;
-		let hrs = (s - mins) / 60;
-
-		let pad = (n, z = 2) => ('00' + n).slice(-z);
-
-		return hrs + ':' + pad(mins) + ':' + pad(secs) + '.' + pad(ms, 3);
-	}
-
-	render() {
-		return (
-			<div className="timer">
-				<div>Таймер</div>
-				<h1 className="counter">{this.msToTime(this.state.milliseconds)}</h1>
-				<button className="buttonTrue" onClick={this.onClickStart}>Start</button>
-				<button className="buttonFalse" onClick={this.onClickStop}>Stop</button>
-				<br />
-				<button className="buttonTrue" onClick={this.onInc}>Inc</button>
-				<button className="buttonFalse" onClick={this.onDec}>Dec</button>
-				<br />
-				<div>Текущий интервал: {this.state.interval}</div>
-			</div>
-		)
-	}
+class TaskgroupRow extends React.Component {
+  render() {
+    const group = this.props.group;
+    return (
+      <tr>
+        <th colSpan="3">
+          {group}
+        </th>
+      </tr>
+    );
+  }
 }
 
-const rootElement = document.getElementById("app");
-ReactDOM.render(<Timer interval="1000"/>, rootElement);
+class TaskRow extends React.Component {
+  render() {
+    const task = this.props.task;
+
+    return (
+      <tr>
+        <td>{task.name}</td>
+        <td>{task.description}</td>
+        <td>{task.date}</td>
+      </tr>
+    );
+  }
+}
+
+class TaskTable extends React.Component {
+  render() {
+    const filterText = this.props.filterText;
+    const filterGroup = this.props.filterGroup;
+
+    const rows = [];
+    let lastgroup = null;
+
+    this.props.tasks.forEach((task) => {
+      if (task.name.indexOf(filterText) === -1) {
+        return;
+      }
+      if (task.group.indexOf(filterGroup) === -1) {
+        return;
+      }
+      if (task.group !== lastgroup) {
+        rows.push(
+          <TaskgroupRow
+            group={task.group}
+            key={task.group} />
+        );
+      }
+      rows.push(
+        <TaskRow
+          task={task}
+          key={task.name}
+        />
+      );
+      lastgroup = task.group;
+    });
+
+    return (
+      <table>
+        <thead>
+          <tr>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Дата</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+    );
+  }
+}
+
+class SearchBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+  }
+  
+  handleFilterTextChange(e) {
+    this.props.onFilterTextChange(e.target.value);
+  }
+  
+  render() {
+    return (
+      <form>
+        <input
+          type="text"
+          placeholder="Поиск..."
+          value={this.props.filterText}
+          onChange={this.handleFilterTextChange}
+        />
+      </form>
+    );
+  }
+}
+
+class FilterableTaskList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      filterText: '', 
+      filterGroup: props.filterGroup
+    };
+    
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+  }
+
+  handleFilterTextChange(filterText) {
+    this.setState({
+      filterText: filterText
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <SearchBar
+          filterText={this.state.filterText}
+          onFilterTextChange={this.handleFilterTextChange}
+        />
+        <TaskTable
+          tasks={this.props.tasks}
+          filterText={this.state.filterText}
+          filterGroup={this.state.filterGroup}
+        />
+      </div>
+    );
+  }
+}
+
+
+const TASKS = [
+  {name: 'Забрать Мишку', description: 'Подробно Забрать Мишку', group: 'Выполнить', date: '2018.10.11'},
+  {name: 'Съесть конфетку', description: 'Подробно Съесть конфетку', group: 'Выполнить'},
+  {name: 'Погладить Светку', description: 'Подробно Погладить Светку', group: 'Выполнить', date: '2018.12.11'},
+  {name: 'Поднять пингвина', description: 'Подробно Поднять пингвина', group: 'Выполняется'},
+  {name: 'Посидеть у камина', description: 'Подробно Посидеть у камина', group: 'Выполняется'},
+  {name: 'Погрызть Тарантино', description: 'Подробно Погрызть Тарантино', group: 'Выполнено'},
+  {name: 'Сделать кислую мину', description: 'Подробно Сделать кислую мину', group: 'Выполнено'},
+  {name: 'Сварить щавелину', description: 'Подробно Сварить щавелину', group: 'Выполнено', date: '2017.02.21'},
+];
+
+ReactDOM.render(
+  <FilterableTaskList tasks={TASKS} filterGroup={'Выполнено'} />,
+  document.getElementById('app')
+);
 
 module.hot.accept();
