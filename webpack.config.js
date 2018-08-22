@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
   entry: './src/index.js',
@@ -18,7 +19,7 @@ module.exports = {
   },
   
   resolve: {
-    extensions: ['*', '.js', '.jsx', 'css']
+    extensions: ['*', '.js', '.jsx', '.css'],
     alias: {
       components: path.resolve(__dirname, 'src/components/')
     }
