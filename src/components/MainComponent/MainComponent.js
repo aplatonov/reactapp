@@ -3,6 +3,7 @@ import SearchBar from 'components/SearchBar/SearchBar';
 import SortBar from 'components/SortBar/SortBar';
 import TaskTable from 'components/TaskTable/TaskTable';
 import Select from 'components/Select/Select';
+import NewRecordForm from 'components/NewRecordForm/NewRecordForm';
 
 export default class MainComponent extends React.Component {
   constructor(props) {
@@ -57,6 +58,8 @@ export default class MainComponent extends React.Component {
           filterGroup={this.state.filterGroup}
           sort={this.state.sort}
         />
+        <br />
+        <NewRecordForm onNewRecordSubmit={this.handleNewRecordSubmit} />
       </div>
     );
   }
