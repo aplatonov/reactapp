@@ -15,8 +15,10 @@ export default class SortBar extends React.Component {
       <div>
         <select onChange={this.handleSortChange} value={this.props.sort}>
           <option value="">Без сортировки</option>
-          <option value="asc">Даты по возрастанию</option>
-          <option value="desc">Даты по убыванию</option>
+          <option value="date_asc">Даты по возрастанию</option>
+          <option value="date_desc">Даты по убыванию</option>
+          <option value="name_asc">Название по возрастанию</option>
+          <option value="name_desc">Название по убыванию</option>
         </select>
       </div>
     )

@@ -11,7 +11,8 @@ export default class MainComponent extends React.Component {
     this.state = {
       filterText: '', 
       filterGroup: '',
-      sort: ''
+      sort: '',
+      tasks: this.props.tasks
     };
     
     this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
@@ -37,6 +38,32 @@ export default class MainComponent extends React.Component {
     });
   }
 
+  handleNewTaskSubmit(data) {
+    const newTask = {
+        id: this.state.tasks.length + 1,
+        name: data[0],
+        description: data[1],
+        group: 'Выполнить',
+        date: new Date().getFullYear() + '.' + (new Date().getMonth() + 1) + '.' + new Date().getDate() 
+    }
+    
+    this.setState({tasks: this.state.tasks.concat(newTask)});
+  }
+
+  handleOnDeleteTask(item) {
+    const tasks = this.state.tasks;
+    for(let i=0; i < tasks.length; i++) {
+      if(tasks[i].id == item.id) {
+        tasks.splice(i, 1);
+        for(let i=0; i < tasks.length; i++) {
+          tasks[i].id--;
+        }
+      }
+    }
+    
+    this.setState({tasks: tasks});
+  }
+
   render() {
     return (
       <div>
@@ -53,13 +80,14 @@ export default class MainComponent extends React.Component {
           onSortChange={this.handleSortChange}
         />
         <TaskTable
-          tasks={this.props.tasks}
+          tasks={this.state.tasks}
           filterText={this.state.filterText}
           filterGroup={this.state.filterGroup}
           sort={this.state.sort}
+          deleteTask={this.handleOnDeleteTask.bind(this)}
         />
         <br />
-        <NewRecordForm onNewRecordSubmit={this.handleNewRecordSubmit} />
+        <NewRecordForm {...this.state} handleNewTaskSubmit={this.handleNewTaskSubmit.bind(this)} />
       </div>
     );
   }
