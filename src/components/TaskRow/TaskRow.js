@@ -1,4 +1,7 @@
 import React from 'react';
+import {
+  Link
+} from 'react-router-dom';
 
 export default class TaskRow extends React.Component {
   onDelete(item) {
@@ -10,7 +13,7 @@ export default class TaskRow extends React.Component {
 
     return (
       <tr key={task.id}>
-        <td>{task.name}</td>
+        <td><Link to={{pathname: `/list/${task.id}`}}>{task.name}</Link></td>
         <td>{task.description}</td>
         <td>{task.date}</td>
         <td>{task.group}</td>
