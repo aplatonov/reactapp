@@ -1,5 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Switch,
+  Route,
+  Link
+} from 'react-router-dom';
 import './style.css';
 import MainComponent from 'components/MainComponent/MainComponent';
 
