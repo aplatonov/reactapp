@@ -6,8 +6,11 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 import './style.css';
-import MainComponent from './components/MainComponent/MainComponent';
+import todoApp from './reducers'
+import App from './components/App';
 import Menu from './router/Menu/Menu';
 import Home from './router/Home/Home';
 
@@ -25,7 +28,7 @@ const TASKS = [
 class List extends React.Component {
   render() {
     return (
-      <MainComponent tasks={TASKS} />
+      <App tasks={TASKS} />
     );
   }
 }
@@ -59,9 +62,11 @@ const ListItem = props => {
   );
 };
 
+let store = createStore(todoApp)
+
 ReactDOM.render(
-  <AppRouter />,
-  document.getElementById('app')
+    <AppRouter />,
+    document.getElementById('app')
 );
 
 module.hot.accept();
